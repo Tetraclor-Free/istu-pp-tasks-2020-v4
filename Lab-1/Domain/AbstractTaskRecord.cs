@@ -21,11 +21,10 @@ namespace Lab1ConsoleApp
         protected AbstractTaskRecord(string record)
         {
             filds = record.Split(';');
-            this.description = filds[0];
-            this.status = filds[1];
-            this.executor = filds[2];
-            this.dateEnd = DateTime.Parse(filds[3]);
-            index = 3;
+            this.description = GetNextField();
+            this.status = GetNextField();
+            this.executor = GetNextField();
+            this.dateEnd = DateTime.Parse(GetNextField());
         }
 
         protected AbstractTaskRecord(string description, string status, string executor, DateTime dateEnd)
@@ -36,22 +35,16 @@ namespace Lab1ConsoleApp
             this.dateEnd = dateEnd;
         }
 
+        protected string GetNextField()
+        {
+            return filds[index++];
+        }
+
         public virtual AbstractTaskRecord Clone() => (AbstractTaskRecord)MemberwiseClone(); 
 
         public override string ToString()
         {
             return $"ИД:{id}\nОписание:{description}\nСтатус:{status}\nИсполнитель:{executor}\nДата завершения:{dateEnd}\n";
-        }
-    }
-
-    public class MyTaskRecord : AbstractTaskRecord
-    {
-        public MyTaskRecord(string record) : base(record)
-        {
-        }
-
-        public MyTaskRecord(string description, string status, string executor, DateTime dateEnd) : base(description, status, executor, dateEnd)
-        {
         }
     }
 }

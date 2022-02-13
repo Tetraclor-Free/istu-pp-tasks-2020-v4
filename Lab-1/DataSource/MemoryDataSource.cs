@@ -12,47 +12,34 @@ namespace Lab1ConsoleApp
     /// </summary>
     public class MemoryDataSource : IDataSource
     {
-        private List<AbstractTaskRecord> records = new List<AbstractTaskRecord>();
+        private Dictionary<int, AbstractTaskRecord> records = new Dictionary<int, AbstractTaskRecord>();
+        private int currentId = 1;
+
         public AbstractTaskRecord Save(AbstractTaskRecord record)
         {
-            if (record.id == 0)
-            {
-                record.id = records.Count + 1;
-                records.Add(record.Clone());
-                return record.Clone();
-            }
-            else
-            {
-                if (CheckOutRange(record.id) == false)
-                    return null;
-                records[record.id] = record.Clone();
-                return record.Clone();
-            }
+            var cloned = record.Clone();
+
+            if (cloned.id == 0) 
+                cloned.id = currentId++;
+
+            records[cloned.id] = cloned;
+
+            return cloned.Clone();
         }
 
         public AbstractTaskRecord Get(int id)
         {
-            if (CheckOutRange(id) == false) 
-                return null;
-
-            return records[id - 1].Clone();
+            return records.TryGetValue(id, out AbstractTaskRecord record) ? record.Clone() : null;
         }
+
         public bool Delete(int id)
         {
-            if (CheckOutRange(id) == false) 
-                return false;
-
-            records.RemoveAt(id - 1);
-            return true;
+            return records.Remove(id); 
         }
+
         public List<AbstractTaskRecord> GetAll()
         {
-            return records.Select(v => v.Clone()).ToList();
-        }
-
-        private bool CheckOutRange(int id)
-        {
-            return id > 0 && id <= records.Count;
+            return records.Select(v => v.Value.Clone()).ToList();
         }
     }
 }

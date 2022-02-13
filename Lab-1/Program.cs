@@ -11,7 +11,9 @@ namespace Lab1ConsoleApp
             IDataSource dataSource = new MemoryDataSource();
             logic = new BusinessLogic(dataSource);
 
-            logic.Save(new MyTaskRecord("Это описание должно быть длиннее 20 символов", "Закрыта", "Me", DateTime.Now));
+            logic.Save(new TaskWithCustomerRecord("Это описание точно длиннее 20 символов", "Закрыта", "Me", DateTime.Now, "Customer"));
+            logic.Save(new TaskRecord("Починить крышу на бане в дачнм поселке", "Новая", "Влад", DateTime.Now.AddDays(10)));
+            logic.Save(new TaskWithMoneyRecord("Сделать выданный срочный заказ", "Новая", "Влад", DateTime.Now.AddDays(5), 2000000));
 
             bool exit = false;
             while (!exit)
@@ -45,35 +47,44 @@ namespace Lab1ConsoleApp
         static void PrintMenu()
         {
             var menu = @"
-1) Добавить запись (выбор подвида записи и ввод данных)
-2) Просмотреть записи (список записей, отсортированных по заданному критерию)
-3) Изменить запись (поиск записи по номеру/идентификатору и ввод измененной
-версии записи)
-4) Удалить запись (поиск записи по номеру/идентификатору и подтверждение
-удаления)
-5) Выход. Выход из программы
+1) Добавить запись
+2) Просмотреть записи 
+3) Изменить запись 
+4) Удалить запись 
+5) Выход. 
 ";
             Console.Write(menu);
         }
 
         static void AddRecord()
         {
-            var ans = GetNumberAnswer("Выбрать подвид записи: \n1)Обычный сотрудник\n2)Временный работник\n3)Стажер", 3);
-            if (ans == -1) return;
+            var ans = GetNumberAnswer("Выбрать подвид записи: \n1)Обычная задача\n2)Задача от заказчика\n3)Задача с наградой\n4)Выход", 4);
+            if (ans == -1 || ans == 4) return;
 
-            AddOrUpdateFromConsole(ans);
+            if (AddOrUpdateFromConsole(ans) == false)
+                AddRecord();
         }
 
-        static void AddOrUpdateFromConsole(int recordType, int id = 0)
+        static bool AddOrUpdateFromConsole(int recordType, int id = 0)
         {
-            Console.Write("Введите через точку с запятой значения следующих полей: ФИО;Должность;Отдел;Оклад");
+            Console.Write("Введите через точку с запятой значения следующих полей: Описание;Статус;Исполнитель;Дата заверешения;");
             AbstractTaskRecord record = null;
             try
             {
                 if (recordType == 1)
                 {
                     Console.WriteLine();
-                    record = new MyTaskRecord(Console.ReadLine());
+                    record = new TaskRecord(Console.ReadLine());
+                }
+                if (recordType == 2)
+                {
+                    Console.WriteLine("Заказчик;");
+                    record = new TaskWithCustomerRecord(Console.ReadLine());
+                }
+                if (recordType == 3)
+                {
+                    Console.WriteLine("Награда;");
+                    record = new TaskWithMoneyRecord(Console.ReadLine());
                 }
                 record.id = id;
                 Console.WriteLine($"Добавлена запись:\n{logic.Save(record)}");
@@ -81,8 +92,10 @@ namespace Lab1ConsoleApp
             catch (Exception ex)
             {
                 Console.WriteLine("Ошибка заполнения данных: " + ex.Message);
-                return;
+                return false;
             }
+
+            return true;
         }
 
         static void PrintList()
@@ -108,7 +121,9 @@ namespace Lab1ConsoleApp
                 return;
             }
             Console.WriteLine($"Изменение записи:{record}");
-            if (record is MyTaskRecord) AddOrUpdateFromConsole(0, id);
+            if (record is TaskRecord) AddOrUpdateFromConsole(1, id);
+            if (record is TaskWithCustomerRecord) AddOrUpdateFromConsole(2, id);
+            if (record is TaskWithMoneyRecord) AddOrUpdateFromConsole(3, id);
         }
 
         static void DeleteRecord()

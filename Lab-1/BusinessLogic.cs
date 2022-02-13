@@ -5,7 +5,13 @@ namespace Lab1ConsoleApp
 {
     public class BusinessLogic
     {
-        List<string> allowStatuses = new List<string>();
+        List<string> allowStatuses = new List<string>()
+        {
+            "Новая",
+            "В работе",
+            "Решена",
+            "Закрыта",
+        };
         int minDesriptionLength = 20;
 
         IDataSource dataSource;
@@ -13,14 +19,7 @@ namespace Lab1ConsoleApp
         public BusinessLogic(IDataSource dataSource)
         {
             this.dataSource = dataSource;
-            allowStatuses = new List<string>()
-            {
-                "Новая",
-                "В работе",
-                "Решена",
-                "Закрыта",
-            };
-        }
+        }     
 
         public AbstractTaskRecord Save(AbstractTaskRecord record)
         {
