@@ -6,6 +6,10 @@ namespace Lab1ConsoleApp
     {
         public string customer; // Заказчик
 
+        public TaskWithCustomerRecord()
+        {
+        }
+
         public TaskWithCustomerRecord(string record) : base(record)
         {
             customer = GetNextField();

@@ -6,6 +6,10 @@ namespace Lab1ConsoleApp
     {
         public uint money;
 
+        public TaskWithMoneyRecord()
+        {
+        }
+
         public TaskWithMoneyRecord(string record) : base(record)
         {
             money = uint.Parse(GetNextField());

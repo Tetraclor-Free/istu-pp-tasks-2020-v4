@@ -3,7 +3,7 @@
 namespace Lab1ConsoleApp
 {
     /// <summary>
-    /// Ваш класс основной записи
+    /// Ваш класс основной записи 
     /// </summary>
     abstract public class AbstractTaskRecord
     {
@@ -17,6 +17,10 @@ namespace Lab1ConsoleApp
 
         protected string[] filds;
         protected int index;
+
+        protected AbstractTaskRecord()
+        {
+        }
 
         protected AbstractTaskRecord(string record)
         {
