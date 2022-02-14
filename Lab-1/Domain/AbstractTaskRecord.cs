@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lab1ConsoleApp
+namespace Lab_1
 {
     /// <summary>
     /// Ваш класс основной записи 
@@ -48,7 +48,7 @@ namespace Lab1ConsoleApp
 
         public override string ToString()
         {
-            return $"ИД:{id}\nОписание:{description}\nСтатус:{status}\nИсполнитель:{executor}\nДата завершения:{dateEnd}\n";
+            return $"ИД:{id}; \nОписание:{description}; \nСтатус:{status}; \nИсполнитель:{executor}; \nДата завершения:{dateEnd}; \n";
         }
     }
 }

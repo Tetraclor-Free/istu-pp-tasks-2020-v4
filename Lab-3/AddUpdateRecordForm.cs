@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lab_1;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,19 +13,19 @@ namespace Lab_3
 {
     public partial class AddUpdateRecordForm : Form
     {
-        public EmployeeRecord EmployeeRecord;
-        EmployeeRecord Record;
-        Dictionary<string, EmployeeRecord> humanTypeToSample = new Dictionary<string, EmployeeRecord>();
+        public AbstractTaskRecord TaskRecord;
+        AbstractTaskRecord Record;
+        Dictionary<string, AbstractTaskRecord> humanTypeToSample = new Dictionary<string, AbstractTaskRecord>();
 
-        public AddUpdateRecordForm(EmployeeRecord record)
+        public AddUpdateRecordForm(AbstractTaskRecord record)
         {
             InitializeComponent();
             if (record != null)
                 RecordTypesComboBox.Enabled = false;
-            record = record ?? new SampleEmployeeRecord(0, "", "", "", 0);
+            record = record ?? new TaskRecord() { dateEnd = DateTime.Now};
             Record = record;
-            var samples = new List<EmployeeRecord>() 
-                {  new SampleEmployeeRecord(), new TempWorkerRecord(), new TraineeRecord()};
+            var samples = new List<AbstractTaskRecord>() 
+                {  new TaskRecord(), new TaskWithCustomerRecord(), new TaskWithMoneyRecord()};
             var startItem = "";
             foreach (var sample in samples)
             {
@@ -63,20 +64,20 @@ namespace Lab_3
             if(RecordTypesComboBox.Enabled == false)
                 newRecord.id = Record.id;
             
-            newRecord.fullname = tableLayoutPanel1.GetControlFromPosition(1, 1).Text;
-            newRecord.post = tableLayoutPanel1.GetControlFromPosition(1, 2).Text;
-            newRecord.department = tableLayoutPanel1.GetControlFromPosition(1, 3).Text;
-            newRecord.salary = int.Parse(tableLayoutPanel1.GetControlFromPosition(1, 4).Text);
+            newRecord.description = tableLayoutPanel1.GetControlFromPosition(1, 1).Text;
+            newRecord.status = tableLayoutPanel1.GetControlFromPosition(1, 2).Text;
+            newRecord.executor = tableLayoutPanel1.GetControlFromPosition(1, 3).Text;
+            newRecord.dateEnd = DateTime.Parse(tableLayoutPanel1.GetControlFromPosition(1, 4).Text);
 
-            if (newRecord is TempWorkerRecord)
+            if (newRecord is TaskWithCustomerRecord)
             {
-                newRecord.dateEnd = DateTime.Parse(tableLayoutPanel1.GetControlFromPosition(1, 5).Text);
+                newRecord.customer = tableLayoutPanel1.GetControlFromPosition(1, 5).Text;
             }
-            else if (newRecord is TraineeRecord)
+            else if (newRecord is TaskWithMoneyRecord)
             {
-                newRecord.educationInstitution = tableLayoutPanel1.GetControlFromPosition(1, 5).Text;
+                newRecord.money = uint.Parse(tableLayoutPanel1.GetControlFromPosition(1, 5).Text);
             }
-            EmployeeRecord = newRecord;
+            TaskRecord = newRecord;
         }
 
         private void RecordTypesComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -87,35 +88,34 @@ namespace Lab_3
             GenerateExtFields(humanTypeToSample[humanType]);
         }
 
-        void GenerateBaseFileds(EmployeeRecord employeeRecord)
+        void GenerateBaseFileds(AbstractTaskRecord record)
         {
-            AddLabelInputPair("Id:", new Label() { Text = employeeRecord.id.ToString()});
-            AddLabelInputPair("ФИО:", new TextBox() { Text = employeeRecord.fullname, Width = 300 });
-            AddLabelInputPair("Должность:", new TextBox() { Text = employeeRecord.post });
+            AddLabelInputPair("Id:", new Label() { Text = record.id.ToString()});
+            AddLabelInputPair("Описание:", new TextBox() { Text = record.description, Width = 300 });
 
-            var allow = BusinessLogic.allowDepartaments.ToList();
-            if(allow.Remove(employeeRecord.department))
-                allow.Insert(0, employeeRecord.department);
+            var allow = BusinessLogic.AllowStatuses.ToList();
+            if (allow.Remove(record.status))
+                allow.Insert(0, record.status);
 
-            var comboBox = new ComboBox() { DataSource = allow, SelectedItem = employeeRecord.department };
-            
-            AddLabelInputPair("Отдел:", comboBox);
-            AddLabelInputPair("Зарплата:", new NumericUpDown() { Maximum = decimal.MaxValue, Value = employeeRecord.salary });
+            var comboBox = new ComboBox() { DataSource = allow, SelectedItem = record.status };
+
+            AddLabelInputPair("Статус:", comboBox);
+            AddLabelInputPair("Исполнитель:", new TextBox() { Text = record.executor, Width = 300 });
+            AddLabelInputPair("Дата Завершения:", new DateTimePicker() { Value = record.dateEnd });
         }
 
-        void GenerateExtFields(EmployeeRecord employeeRecord)
+        void GenerateExtFields(AbstractTaskRecord employeeRecord)
         {
-            if (employeeRecord is TempWorkerRecord)
+            if (employeeRecord is TaskWithCustomerRecord)
             {
-                var date = (employeeRecord as TempWorkerRecord).dateEnd;
-                date = date == default ? DateTime.Now : date;
-                AddLabelInputPair("Дата окончания контракта: ",
-                    new DateTimePicker() { Value = date });
+                var customer = (employeeRecord as TaskWithCustomerRecord).customer;
+                AddLabelInputPair("Заказчик: ",
+                    new TextBox() { Text = customer });
             } 
-            else if (employeeRecord is TraineeRecord) 
+            else if (employeeRecord is TaskWithMoneyRecord) 
             {
-                AddLabelInputPair("Учебное заведение: ",
-                    new TextBox() { Text = (employeeRecord as TraineeRecord).educationInstitution});
+                AddLabelInputPair("Оплата: ",
+                    new NumericUpDown() { Minimum = 0, Maximum = uint.MaxValue, Value = (employeeRecord as TaskWithMoneyRecord).money });
             }
         }
 

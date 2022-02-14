@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lab1ConsoleApp
+namespace Lab_1
 {
     public class TaskWithCustomerRecord : AbstractTaskRecord
     {
@@ -22,7 +22,7 @@ namespace Lab1ConsoleApp
 
         public override string ToString()
         {
-            return $"{base.ToString()}Заказчик:{customer}\n";
+            return $"Задача от заказчика:\n{base.ToString()}Заказчик:{customer}\n";
         }
     }
 }

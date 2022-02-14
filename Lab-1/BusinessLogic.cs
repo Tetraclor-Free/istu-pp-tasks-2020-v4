@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Lab1ConsoleApp
+namespace Lab_1
 {
     public class BusinessLogic
     {
-        List<string> allowStatuses = new List<string>()
+        public static List<string> AllowStatuses = new List<string>()
         {
             "Новая",
             "В работе",
@@ -23,9 +23,9 @@ namespace Lab1ConsoleApp
 
         public AbstractTaskRecord Save(AbstractTaskRecord record)
         {
-            if (allowStatuses.Contains(record.status) == false)
+            if (AllowStatuses.Contains(record.status) == false)
             {
-                throw new ArgumentException($"Статус должен быть один из следующих {string.Join(",", allowStatuses)}, но передан {record.status}");
+                throw new ArgumentException($"Статус должен быть один из следующих {string.Join(",", AllowStatuses)}, но передан {record.status}");
             }
 
             if(record.description.Length <= minDesriptionLength)

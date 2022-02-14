@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lab1ConsoleApp
+namespace Lab_1
 {
     public class TaskWithMoneyRecord : AbstractTaskRecord
     {
@@ -22,7 +22,7 @@ namespace Lab1ConsoleApp
 
         public override string ToString()
         {
-            return $"{base.ToString()}Награда:{money}\n";
+            return $"Задача с оплатой:\n{base.ToString()}Награда:{money}\n";
         }
     }
 }

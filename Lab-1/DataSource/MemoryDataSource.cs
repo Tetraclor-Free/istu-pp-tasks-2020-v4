@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Lab1ConsoleApp
+namespace Lab_1
 {
     /// <summary>
     /// Хранение записей в оперативной памяти

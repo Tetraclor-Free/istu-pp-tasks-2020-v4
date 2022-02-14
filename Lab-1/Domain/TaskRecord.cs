@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace Lab1ConsoleApp
+namespace  Lab_1
+
 {
     public class TaskRecord : AbstractTaskRecord
     {
@@ -14,6 +15,11 @@ namespace Lab1ConsoleApp
 
         public TaskRecord(string description, string status, string executor, DateTime dateEnd) : base(description, status, executor, dateEnd)
         {
+        }
+
+        public override string ToString()
+        {
+            return "Задача:\n" + base.ToString();
         }
     }
 }

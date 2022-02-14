@@ -1,11 +1,11 @@
-﻿using Lab1ConsoleApp;
+﻿using Lab_1;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Lab1ConsoleApp.ConsoleInterface;
+using static Lab_1.ConsoleInterface;
 
 namespace Lab_2
 {

@@ -37,11 +37,9 @@ namespace Lab_3
             this.CreateReportButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.ToNumeric = new System.Windows.Forms.NumericUpDown();
-            this.FromNumeric = new System.Windows.Forms.NumericUpDown();
+            this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ToNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FromNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // ViewRecordsListBox
@@ -83,11 +81,11 @@ namespace Lab_3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.toDateTimePicker);
+            this.groupBox1.Controls.Add(this.fromDateTimePicker);
             this.groupBox1.Controls.Add(this.CreateReportButton);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.ToNumeric);
-            this.groupBox1.Controls.Add(this.FromNumeric);
             this.groupBox1.Location = new System.Drawing.Point(12, 469);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(855, 132);
@@ -116,35 +114,25 @@ namespace Lab_3
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(164, 28);
+            this.label1.Location = new System.Drawing.Point(105, 26);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 20);
+            this.label1.Size = new System.Drawing.Size(145, 20);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Оклад: от";
+            this.label1.Text = "Дата завршения: от";
             // 
-            // ToNumeric
+            // fromDateTimePicker
             // 
-            this.ToNumeric.Location = new System.Drawing.Point(512, 26);
-            this.ToNumeric.Maximum = new decimal(new int[] {
-            10000000,
-            0,
-            0,
-            0});
-            this.ToNumeric.Name = "ToNumeric";
-            this.ToNumeric.Size = new System.Drawing.Size(150, 27);
-            this.ToNumeric.TabIndex = 1;
+            this.fromDateTimePicker.Location = new System.Drawing.Point(256, 26);
+            this.fromDateTimePicker.Name = "fromDateTimePicker";
+            this.fromDateTimePicker.Size = new System.Drawing.Size(179, 27);
+            this.fromDateTimePicker.TabIndex = 6;
             // 
-            // FromNumeric
+            // toDateTimePicker
             // 
-            this.FromNumeric.Location = new System.Drawing.Point(256, 26);
-            this.FromNumeric.Maximum = new decimal(new int[] {
-            10000000,
-            0,
-            0,
-            0});
-            this.FromNumeric.Name = "FromNumeric";
-            this.FromNumeric.Size = new System.Drawing.Size(150, 27);
-            this.FromNumeric.TabIndex = 0;
+            this.toDateTimePicker.Location = new System.Drawing.Point(483, 26);
+            this.toDateTimePicker.Name = "toDateTimePicker";
+            this.toDateTimePicker.Size = new System.Drawing.Size(179, 27);
+            this.toDateTimePicker.TabIndex = 7;
             // 
             // Form1
             // 
@@ -157,11 +145,9 @@ namespace Lab_3
             this.Controls.Add(this.DeleteButton);
             this.Controls.Add(this.ViewRecordsListBox);
             this.Name = "Form1";
-            this.Text = "Учет сотрудников";
+            this.Text = "Учет задач";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ToNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FromNumeric)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -176,8 +162,8 @@ namespace Lab_3
         private System.Windows.Forms.Button CreateReportButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown ToNumeric;
-        private System.Windows.Forms.NumericUpDown FromNumeric;
+        private System.Windows.Forms.DateTimePicker toDateTimePicker;
+        private System.Windows.Forms.DateTimePicker fromDateTimePicker;
     }
 }
 

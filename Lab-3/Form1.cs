@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Lab_2;
+using Lab_1;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,17 +15,26 @@ namespace Lab_3
 {
     public partial class Form1 : Form
     {
-        BusinessLogic logic;
+        BusinessLogicWithReport logic;
 
         public Form1()
         {
             InitializeComponent();
 
-            logic = new BusinessLogic(new FileDataSource(@"..\..\..\bd.bin"));
+            //var dataSource = new FileDataSource(@"../../../data.bin",
+            //    new Dictionary<byte, Func<AbstractTaskRecord>>()
+            //    {
+            //        [1] = (() => new TaskRecord()),
+            //        [2] = (() => new TaskWithCustomerRecord()),
+            //        [3] = (() => new TaskWithMoneyRecord())
+            //    });
+            var dataSource = new MemoryDataSource();
+            logic = new Lab_2.BusinessLogicWithReport(dataSource);
 
-            //logic.Save(new SampleEmployeeRecord("Дмитрий Г. Д.;Разработчик;Разработка;50000"));
-            //logic.Save(new TempWorkerRecord("Алексей А. Ж.;Разработчик;Разработка;100000;20.12.2022"));
-            //logic.Save(new TraineeRecord("Александр Ф. Ю.;Стажер;Бухгалтерия;5555;УДГУ"));
+            dataSource.Save(new TaskWithCustomerRecord("Это описание точно длиннее 20 символов", "Закрыта", "Me", DateTime.Now, "Customer"));
+            dataSource.Save(new TaskRecord("Починить крышу на бане в дачнм поселке", "Новая", "Влад", DateTime.Now.AddDays(10)));
+            dataSource.Save(new TaskWithMoneyRecord("Сделать выданный срочный заказ", "Новая", "Влад", DateTime.Now.AddDays(5), 2000000));
+
             AddButton.Click += AddButton_Click;
             ChangeButton.Click += ChangeButton_Click;
             DeleteButton.Click += DeleteButton_Click;
@@ -37,15 +48,15 @@ namespace Lab_3
             var dialog = new SaveFileDialog();
             var result = dialog.ShowDialog();
             if (result != DialogResult.OK) return;
-            var min = (int)FromNumeric.Value;
-            var max = (int)ToNumeric.Value;
-            var report = logic.GetReport(min, max);
+            var from_ = fromDateTimePicker.Value;
+            var to = toDateTimePicker.Value;
+            var report = logic.MakeReport(from_, to);
             File.WriteAllText(dialog.FileName, report);
         }
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-            var record = (EmployeeRecord)ViewRecordsListBox.SelectedItem;
+            var record = (AbstractTaskRecord)ViewRecordsListBox.SelectedItem;
             if (record == null) return;
             logic.Delete(record.id);
             ViewRecords();
@@ -53,7 +64,7 @@ namespace Lab_3
 
         private void ChangeButton_Click(object sender, EventArgs e)
         {
-            var record = (EmployeeRecord)ViewRecordsListBox.SelectedItem;
+            var record = (AbstractTaskRecord)ViewRecordsListBox.SelectedItem;
             OpenAddUpdateRecordForm(record);
         }
 
@@ -67,7 +78,7 @@ namespace Lab_3
             ViewRecordsListBox.DataSource = logic.GetAll();
         }
 
-        public void OpenAddUpdateRecordForm(EmployeeRecord record)
+        public void OpenAddUpdateRecordForm(AbstractTaskRecord record)
         {
             var form = new AddUpdateRecordForm(record);
             DialogResult result = DialogResult.Cancel;
@@ -76,10 +87,10 @@ namespace Lab_3
                 result = form.ShowDialog();
                 if (result != DialogResult.OK) return;
 
-                var newRecord = form.EmployeeRecord;
+                var newRecord = form.TaskRecord;
                 logic.Save(newRecord);
             }
-            catch(ArgumentException e)
+            catch(Exception e)
             {
                 MessageBox.Show(e.Message);
                 return;
