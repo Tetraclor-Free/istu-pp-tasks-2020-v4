@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Lab1ConsoleApp.ConsoleInterface;
 
 namespace Lab_2
 {
@@ -36,12 +37,26 @@ namespace Lab_2
             dataSource.Save(new TaskRecord("Починить крышу на бане в дачнм поселке", "Новая", "Влад", DateTime.Now.AddDays(10)));
             dataSource.Save(new TaskWithMoneyRecord("Сделать выданный срочный заказ", "Новая", "Влад", DateTime.Now.AddDays(5), 2000000));
 
-            new ConsoleInterface().Start(dataSource);
+            var businessLogic = new BusinessLogicWithReport(dataSource);
+
+            var extMenuList = new List<MenuItem>()
+            {
+                new MenuItem("Сформировать отчет", "6", v => MakeReportConsole(v, businessLogic))
+            };
+
+            new ConsoleInterface().Start(businessLogic, extMenuList);
+        }
+
+        static void MakeReportConsole(ConsoleInterface consoleInterface, BusinessLogicWithReport businessLogic)
+        {
+            var from_ = consoleInterface.GetUserInput<DateTime>("Ввод даты от:", "ошибка при наборе даты");
+            var to = consoleInterface.GetUserInput<DateTime>("Ввод даты по:", "ошибка при наборе даты");
+
+            var report = businessLogic.MakeReport(from_, to);
+
+            Console.WriteLine(report);
         }
     }
 
-    public class TaskRecordFabric
-    {
 
-    }
 }

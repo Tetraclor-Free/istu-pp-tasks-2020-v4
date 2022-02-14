@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lab1ConsoleApp
 {
@@ -13,7 +14,7 @@ namespace Lab1ConsoleApp
             dataSource.Save(new TaskRecord("Починить крышу на бане в дачнм поселке", "Новая", "Влад", DateTime.Now.AddDays(10)));
             dataSource.Save(new TaskWithMoneyRecord("Сделать выданный срочный заказ", "Новая", "Влад", DateTime.Now.AddDays(5), 2000000));
 
-            new ConsoleInterface().Start(dataSource);
+            new ConsoleInterface().Start(new BusinessLogic(dataSource));
         }
     }
 
@@ -36,20 +37,25 @@ namespace Lab1ConsoleApp
             }
         }
 
-        public void Start(IDataSource dataSource, List<MenuItem> menuItems = null)
+        public void Start(BusinessLogic businessLogic, List<MenuItem> extMenuItems = null)
         {
-            menuItems = menuItems ?? new List<MenuItem>();
-            logic = new BusinessLogic(dataSource);
+            logic = businessLogic;
+            extMenuItems = extMenuItems ?? new List<MenuItem>();
+
+            var defaultMenuItems = new List<MenuItem>
+            {
+                new MenuItem("Добавить запись", "1", v => AddRecord()),
+                new MenuItem("Просмотреть записи", "2", v => PrintList()),
+                new MenuItem("Изменить запись", "3", v => ChangeRecord()),
+                new MenuItem("Удалить запись", "4", v => DeleteRecord()),
+                new MenuItem("Выход", "5", v => v.exit = true)
+            };
+
+            var allMenuItems = defaultMenuItems.Union(extMenuItems).ToList();
 
             var menuActions = new Dictionary<string, MenuItem>();
 
-            menuItems.Add(new MenuItem("Добавить запись", "1", v => AddRecord()));
-            menuItems.Add(new MenuItem("Просмотреть записи", "2", v => PrintList()));
-            menuItems.Add(new MenuItem("Изменить запись", "3", v => ChangeRecord()));
-            menuItems.Add(new MenuItem("Удалить запись", "4", v => DeleteRecord()));
-            menuItems.Add(new MenuItem("Выход", "5", v => v.exit = true));
-
-            foreach(var menuItem in menuItems)
+            foreach (var menuItem in allMenuItems)
             {
                 menuActions[menuItem.Id] = menuItem;
             }
@@ -57,7 +63,7 @@ namespace Lab1ConsoleApp
             exit = false;
             while (!exit)
             {
-                PrintMenu(menuItems);
+                PrintMenu(allMenuItems);
                 string command = Console.ReadLine();
 
                 if (menuActions.ContainsKey(command))
@@ -167,20 +173,39 @@ namespace Lab1ConsoleApp
             logic.Delete(id);
         }
 
-        int GetNumberAnswer(string message, int maxNum)
+        public int GetNumberAnswer(string message, int maxNum)
         {
-            Console.WriteLine(message);
+            return GetUserInput<int>(message, "Неверный ввод целого положительног очисла", v => maxNum >= v && v > 0);
+        }
 
-            var ans = Console.ReadLine();
-
-            if (int.TryParse(ans, out int result) && maxNum >= result && result > 0)
+        public bool ReadInput<T>(out T result)
+        {
+            try
             {
-                return result;
+                result = (T)Convert.ChangeType(Console.ReadLine(), typeof(T));
+                return true;
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Неизвестная команда");
-                return -1;
+                result = default;
+                return false;
+            }
+        }
+
+        public T GetUserInput<T>(string message, string messageIfError, Func<T, bool> check = null, bool defultIfError = true)
+        {
+            check ??= (v => true);
+
+            while (true)
+            {
+                Console.WriteLine(message);
+
+                if (ReadInput(out T value) && check(value))
+                    return value;
+
+                Console.WriteLine(messageIfError);
+                if (defultIfError)
+                    return default;
             }
         }
     }
