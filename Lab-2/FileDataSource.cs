@@ -120,7 +120,10 @@ namespace Lab_2
         private AbstractTaskRecord ReadRecord()
         {
             if (fileStream.ReadByte() == 1)
+            {
+                fileStream.Seek(bytesOnRecord - 1, SeekOrigin.Current);
                 return null;
+            }
 
             var recordType = (byte)fileStream.ReadByte();
             var created = recordFabric[recordType]();
@@ -156,7 +159,9 @@ namespace Lab_2
 
             while(fileStream.Position < fileStream.Length)
             {
-                allRecord.Add(ReadRecord());
+                var record = ReadRecord();
+                if (record == null) continue;
+                allRecord.Add(record);
             }
 
             return allRecord;

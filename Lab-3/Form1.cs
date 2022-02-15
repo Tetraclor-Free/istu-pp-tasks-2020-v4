@@ -21,19 +21,25 @@ namespace Lab_3
         {
             InitializeComponent();
 
-            //var dataSource = new FileDataSource(@"../../../data.bin",
-            //    new Dictionary<byte, Func<AbstractTaskRecord>>()
-            //    {
-            //        [1] = (() => new TaskRecord()),
-            //        [2] = (() => new TaskWithCustomerRecord()),
-            //        [3] = (() => new TaskWithMoneyRecord())
-            //    });
-            var dataSource = new MemoryDataSource();
-            logic = new Lab_2.BusinessLogicWithReport(dataSource);
+            IDataSource dataSource;
 
-            dataSource.Save(new TaskWithCustomerRecord("Это описание точно длиннее 20 символов", "Закрыта", "Me", DateTime.Now, "Customer"));
-            dataSource.Save(new TaskRecord("Починить крышу на бане в дачнм поселке", "Новая", "Влад", DateTime.Now.AddDays(10)));
-            dataSource.Save(new TaskWithMoneyRecord("Сделать выданный срочный заказ", "Новая", "Влад", DateTime.Now.AddDays(5), 2000000));
+            //File.Delete(@"../../../data.bin");
+
+            dataSource = new FileDataSource(@"../../../data.bin",
+                new Dictionary<byte, Func<AbstractTaskRecord>>()
+                {
+                    [1] = (() => new TaskRecord()),
+                    [2] = (() => new TaskWithCustomerRecord()),
+                    [3] = (() => new TaskWithMoneyRecord())
+                });
+
+            //dataSource = new MemoryDataSource();
+
+            //dataSource.Save(new TaskWithCustomerRecord("Это описание точно длиннее 20 символов", "Закрыта", "Me", DateTime.Now, "Customer"));
+            //dataSource.Save(new TaskRecord("Починить крышу на бане в дачнм поселке", "Новая", "Влад", DateTime.Now.AddDays(10)));
+            //dataSource.Save(new TaskWithMoneyRecord("Сделать выданный срочный заказ", "Новая", "Влад", DateTime.Now.AddDays(5), 2000000));
+
+            logic = new Lab_2.BusinessLogicWithReport(dataSource);
 
             AddButton.Click += AddButton_Click;
             ChangeButton.Click += ChangeButton_Click;
